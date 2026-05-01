@@ -1,6 +1,6 @@
 # 0.1.0
 
-*Iteration 1:*
+*Iteration 1*
 
 ## Added
 - Customised snake appearance
