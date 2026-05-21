@@ -10,8 +10,8 @@
 - Add and configure prettier
 - Use the default prettier options
 - Add and configure eslint
-- Install and use the eslint-config-prettier, eslint-plugin-sonarjs, eslint-plugin-unicorn, eslintplugin-eslint-comments plugins 6 - 8
-- Lint the whole codebase 6 - 8
+- Install and use the eslint-config-prettier, eslint-plugin-sonarjs, eslint-plugin-unicorn, eslintplugin-eslint-comments plugins
+- Lint the whole codebase
 - Major release the 1.0.0 version
 
 # 0.1.0
