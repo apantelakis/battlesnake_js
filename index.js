@@ -1,9 +1,6 @@
 import runServer from "./server.js";
 import chalk from "chalk";
 
-// info is called when you create your Battlesnake on play.battlesnake.com
-// and controls your Battlesnake's appearance
-// TIP: If you open your Battlesnake URL in a browser you should see this data
 function info() {
   console.log("INFO");
 
@@ -16,22 +13,14 @@ function info() {
   };
 }
 
-// start is called when your Battlesnake begins a game
 function start(gameState) {
   console.log("GAME START");
 }
 
-// end is called when your Battlesnake finishes a game
 function end(gameState) {
   console.log("GAME OVER\n");
 }
 
-// printBoard takes the board object and prints it to the console.
-// Symbols:
-//   ' . ' = empty cell       (dark background)
-//   ' * ' = food             (green background)
-//   ' H ' = snake head       (red background)
-//   ' B ' = snake body       (yellow background)
 function printBoard(board) {
   const { width, height, food, snakes } = board;
 
@@ -58,9 +47,6 @@ function printBoard(board) {
   }
 }
 
-// move is called on every turn and returns your next move
-// Valid moves are "up", "down", "left", or "right"
-// See https://docs.battlesnake.com/api/example-move for available data
 function move(gameState) {
   let isMoveSafe = {
     up: true,
@@ -69,21 +55,16 @@ function move(gameState) {
     right: true,
   };
 
-  // We've included code to prevent your Battlesnake from moving backwards
   const myHead = gameState.you.body[0];
   const myNeck = gameState.you.body[1];
 
   if (myNeck.x < myHead.x) {
-    // Neck is left of head, don't move left
     isMoveSafe.left = false;
   } else if (myNeck.x > myHead.x) {
-    // Neck is right of head, don't move right
     isMoveSafe.right = false;
   } else if (myNeck.y < myHead.y) {
-    // Neck is below head, don't move down
     isMoveSafe.down = false;
   } else if (myNeck.y > myHead.y) {
-    // Neck is above head, don't move up
     isMoveSafe.up = false;
   }
 
@@ -91,9 +72,9 @@ function move(gameState) {
   const boardWidth = gameState.board.width;
   const boardHeight = gameState.board.height;
 
-  if (myHead.x + 1 >= boardWidth) isMoveSafe.right = false;
-  if (myHead.x - 1 < 0)          isMoveSafe.left  = false;
-  if (myHead.y + 1 >= boardHeight) isMoveSafe.up   = false;
+  if (myHead.x + 1 >= boardWidth)  isMoveSafe.right = false;
+  if (myHead.x - 1 < 0)           isMoveSafe.left  = false;
+  if (myHead.y + 1 >= boardHeight) isMoveSafe.up    = false;
   if (myHead.y - 1 < 0)           isMoveSafe.down  = false;
 
   // Step 2 - Prevent colliding with own body
@@ -116,22 +97,43 @@ function move(gameState) {
     }
   }
 
-  // Are there any safe moves left?
   const safeMoves = Object.keys(isMoveSafe).filter((key) => isMoveSafe[key]);
   if (safeMoves.length == 0) {
     console.log(`MOVE ${gameState.turn}: No safe moves detected! Moving down`);
     return { move: "down" };
   }
 
-  // Choose a random move from the safe moves
-  const nextMove = safeMoves[Math.floor(Math.random() * safeMoves.length)];
+  // Step 4 - Move towards closest food using Manhattan distance
+  const food = gameState.board.food;
+  const moveDeltas = {
+    up:    { x: 0,  y: 1  },
+    down:  { x: 0,  y: -1 },
+    left:  { x: -1, y: 0  },
+    right: { x: 1,  y: 0  },
+  };
 
-  // TODO: Step 4 - Move towards food instead of random, to regain health and survive longer
-  // food = gameState.board.food;
+  let nextMove;
+
+  if (food.length > 0) {
+    const closestFood = food.reduce((closest, f) => {
+      const distF       = Math.abs(f.x - myHead.x) + Math.abs(f.y - myHead.y);
+      const distClosest = Math.abs(closest.x - myHead.x) + Math.abs(closest.y - myHead.y);
+      return distF < distClosest ? f : closest;
+    });
+
+    nextMove = safeMoves.reduce((best, move) => {
+      const distMove = Math.abs((myHead.x + moveDeltas[move].x) - closestFood.x)
+                     + Math.abs((myHead.y + moveDeltas[move].y) - closestFood.y);
+      const distBest = Math.abs((myHead.x + moveDeltas[best].x) - closestFood.x)
+                     + Math.abs((myHead.y + moveDeltas[best].y) - closestFood.y);
+      return distMove < distBest ? move : best;
+    });
+  } else {
+    nextMove = safeMoves[Math.floor(Math.random() * safeMoves.length)];
+  }
 
   console.log(`MOVE ${gameState.turn}: ${nextMove}`);
 
-  // Print the board after sending the response
   setImmediate(() => printBoard(gameState.board));
 
   return { move: nextMove };
