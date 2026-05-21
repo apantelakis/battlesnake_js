@@ -18,4 +18,8 @@
     "express": "^4.20.0",
     "starter-snake-javascript": "file:"
   }
+  "scripts": {
+  "format": "prettier --write .",
+  "format:check": "prettier --check ."
+}
 }
