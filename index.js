@@ -1,3 +1,15 @@
+// Welcome to
+// __________         __    __  .__                               __
+// \______   \_____ _/  |__/  |_|  |   ____   ______ ____ _____  |  | __ ____
+//  |    |  _/\__  \\   __\   __\  | _/ __ \ /  ___//    \\__  \ |  |/ // __ \
+//  |    |   \ / __ \|  |  |  | |  |_\  ___/ \___ \|   |  \/ __ \|    <\  ___/
+//  |________/(______/__|  |__| |____/\_____>______>___|__(______/__|__\\_____>
+//
+// This file can be a nice home for your Battlesnake logic and helper functions.
+//
+// To get you started we've included code to prevent your Battlesnake from moving backwards.
+// For more info see docs.battlesnake.com
+
 import runServer from "./server.js";
 import chalk from "chalk";
 
@@ -86,7 +98,7 @@ function move(gameState) {
     if (part.y === myHead.y - 1 && part.x === myHead.x) isMoveSafe.down  = false;
   }
 
-  // Step 3 - Prevent colliding with other snakes
+  // Step 3 - Prevent colliding with other snakes' bodies
   const opponents = gameState.board.snakes;
   for (const snake of opponents) {
     for (const part of snake.body) {
@@ -97,6 +109,31 @@ function move(gameState) {
     }
   }
 
+  // Step 4 - Avoid head-to-head collisions with larger or equal snakes
+  // For each opponent, find all cells their head could move into next turn.
+  // If their length >= ours, moving into that cell risks a collision we'd lose.
+  const myLength = gameState.you.length;
+  for (const snake of opponents) {
+    if (snake.id === gameState.you.id) continue; // skip ourselves
+    if (snake.length < myLength) continue;       // we're bigger — they'd lose, not us
+
+    const oppHead = snake.body[0];
+    const possibleOppMoves = [
+      { x: oppHead.x + 1, y: oppHead.y },
+      { x: oppHead.x - 1, y: oppHead.y },
+      { x: oppHead.x,     y: oppHead.y + 1 },
+      { x: oppHead.x,     y: oppHead.y - 1 },
+    ];
+
+    for (const pos of possibleOppMoves) {
+      if (pos.x === myHead.x + 1 && pos.y === myHead.y) isMoveSafe.right = false;
+      if (pos.x === myHead.x - 1 && pos.y === myHead.y) isMoveSafe.left  = false;
+      if (pos.y === myHead.y + 1 && pos.x === myHead.x) isMoveSafe.up    = false;
+      if (pos.y === myHead.y - 1 && pos.x === myHead.x) isMoveSafe.down  = false;
+    }
+  }
+
+  // Are there any safe moves left?
   const safeMoves = Object.keys(isMoveSafe).filter((key) => isMoveSafe[key]);
   if (safeMoves.length == 0) {
     console.log(`MOVE ${gameState.turn}: No safe moves detected! Moving down`);
@@ -145,4 +182,3 @@ runServer({
   move: move,
   end: end,
 });
-
