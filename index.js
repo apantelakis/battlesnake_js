@@ -18,7 +18,7 @@ function info() {
 
   return {
     apiversion: "1",
-    author: "Thanasis, Andreas, Dionysis, Iasonas",
+    author: "Thanasis, Andreas, Dionysis, Iasonas", "Nikolas",
     color: "#00C853",
     head: "tongue",
     tail: "curled",
