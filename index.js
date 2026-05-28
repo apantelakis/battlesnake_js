@@ -90,24 +90,38 @@ function move(gameState) {
   if (myHead.y - 1 < 0)           isMoveSafe.down  = false;
 
   // Step 2 - Prevent colliding with own body
-  const myBody = gameState.you.body;
-  for (const part of myBody) {
+const myBody = gameState.you.body;
+const myTail = myBody[myBody.length - 1];
+const mySecondLast = myBody[myBody.length - 2];
+const myAte = myTail.x === mySecondLast.x && myTail.y === mySecondLast.y;
+
+for (const part of myBody) {
+  // Skip tail if snake didn't eat (tail will move away)
+  if (!myAte && part.x === myTail.x && part.y === myTail.y) continue;
+
+  if (part.x === myHead.x + 1 && part.y === myHead.y) isMoveSafe.right = false;
+  if (part.x === myHead.x - 1 && part.y === myHead.y) isMoveSafe.left  = false;
+  if (part.y === myHead.y + 1 && part.x === myHead.x) isMoveSafe.up    = false;
+  if (part.y === myHead.y - 1 && part.x === myHead.x) isMoveSafe.down  = false;
+}
+
+// Step 3 - Prevent colliding with other snakes
+const opponents = gameState.board.snakes;
+for (const snake of opponents) {
+  const theirTail = snake.body[snake.body.length - 1];
+  const theirSecondLast = snake.body[snake.body.length - 2];
+  const theirAte = theirTail.x === theirSecondLast.x && theirTail.y === theirSecondLast.y;
+
+  for (const part of snake.body) {
+    // Skip tail if opponent didn't eat (tail will move away)
+    if (!theirAte && part.x === theirTail.x && part.y === theirTail.y) continue;
+
     if (part.x === myHead.x + 1 && part.y === myHead.y) isMoveSafe.right = false;
     if (part.x === myHead.x - 1 && part.y === myHead.y) isMoveSafe.left  = false;
     if (part.y === myHead.y + 1 && part.x === myHead.x) isMoveSafe.up    = false;
     if (part.y === myHead.y - 1 && part.x === myHead.x) isMoveSafe.down  = false;
   }
-
-  // Step 3 - Prevent colliding with other snakes' bodies
-  const opponents = gameState.board.snakes;
-  for (const snake of opponents) {
-    for (const part of snake.body) {
-      if (part.x === myHead.x + 1 && part.y === myHead.y) isMoveSafe.right = false;
-      if (part.x === myHead.x - 1 && part.y === myHead.y) isMoveSafe.left  = false;
-      if (part.y === myHead.y + 1 && part.x === myHead.x) isMoveSafe.up    = false;
-      if (part.y === myHead.y - 1 && part.x === myHead.x) isMoveSafe.down  = false;
-    }
-  }
+}
 
   // Step 4 - Avoid head-to-head collisions with larger or equal snakes
   // For each opponent, find all cells their head could move into next turn.
