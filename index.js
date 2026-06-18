@@ -55,6 +55,8 @@ import chalk from "chalk";
  * @returns {{ apiversion: string, author: string, color: string, head: string, tail: string }}
  *   Snake configuration object.
  */
+
+// our hotfix was the color change, the relevant issue was chosen and reopened at the end to ensure proper status flow
 function info() {
   console.log("INFO");
   return {
