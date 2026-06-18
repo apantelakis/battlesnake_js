@@ -1,2 +1,2 @@
 1. Hotfix containing a change to customisation
-2. Minor release v1.2.0
+2. Create the 4 github actions that we discussed in class
