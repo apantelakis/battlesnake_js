@@ -13,6 +13,6 @@ jobs:
         with:
           node-version: 20
           cache: npm
-      - run: npm ci
+      - run: npm ci --legacy-peer-deps
       - name: Run tests with coverage
         run: npm test -- --coverage --coverageThreshold='{"global":{"lines":50,"functions":50,"branches":50,"statements":50}}'
