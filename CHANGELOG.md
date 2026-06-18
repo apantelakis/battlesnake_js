@@ -1,3 +1,17 @@
+# 1.2.0
+
+_Iteration 4_
+
+## Added
+
+- Update the README.md with any documentation required regarding your project's system documentation
+- Add to your snake the ability to hunt smaller snakes and kill them 
+- Create the 4 github actions that we discussed in class
+- Enable dependabot security and vulnerability updates (dependabot alerts)
+- Minor release v1.2.0
+
+---
+
 # 1.1.0
 
 _Iteration 3_
