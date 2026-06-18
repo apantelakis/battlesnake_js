@@ -56,11 +56,11 @@ The server listens on `http://0.0.0.0:8000` by default. Set the `PORT` environme
 
 ## Move Strategy
 
-1. **Avoid self & walls** — eliminates out-of-bounds and own-body collisions.
-2. **Avoid other snakes** — blocks cells occupied by any snake body, respecting tails that are about to vacate.
-3. **Head-to-head avoidance** — marks cells reachable by an equal-or-larger opponent's head as unsafe.
-4. **Flood fill** — among the remaining safe moves, picks the one leading to the most open space.
-5. **Food seeking** — when multiple moves tie on flood-fill score, prefers the one moving closer to the nearest food (Manhattan distance).
+1. **Avoid self & walls**, eliminates out-of-bounds and own-body collisions.
+2. **Avoid other snakes**, blocks cells occupied by any snake body, respecting tails that are about to vacate.
+3. **Head-to-head avoidance**, marks cells reachable by an equal-or-larger opponent's head as unsafe.
+4. **Flood fill**, among the remaining safe moves, picks the one leading to the most open space.
+5. **Food seeking**, when multiple moves tie on flood-fill score, prefers the one moving closer to the nearest food (Manhattan distance).
 
 ---
 
