@@ -1,0 +1,18 @@
+{
+  "source": {
+    "include": ["index.js", "server.js"],
+    "includePattern": ".+\\.js$"
+  },
+  "opts": {
+    "destination": "./docs",
+    "recurse": true
+  },
+  "plugins": [],
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false
+  },
+  "metadata": {
+    "title": "Battlesnake JS Documentation"
+  }
+}
