@@ -102,7 +102,7 @@ This will rebuild the `docs/` folder from the JSDoc comments in `index.js` and `
 ```bash
 npm test -- --coverage
 ```
-
+ 
 ---
 
 ## Docker
