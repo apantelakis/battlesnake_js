@@ -73,7 +73,7 @@ function info() {
  * @param {GameState} gameState - The initial game state provided by the engine.
  * @returns {void}
  */
-function start(gameState) {
+function start(_gameState) {
   console.log("GAME START");
 }
 
@@ -84,7 +84,7 @@ function start(gameState) {
  * @param {GameState} gameState - The final game state provided by the engine.
  * @returns {void}
  */
-function end(gameState) {
+function end(_gameState) {
   console.log("GAME OVER\n");
 }
 
