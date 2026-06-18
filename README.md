@@ -45,12 +45,12 @@ The server listens on `http://0.0.0.0:8000` by default. Set the `PORT` environme
 
 ## API Endpoints
 
-| Method | Path     | Description                          |
-|--------|----------|--------------------------------------|
+| Method | Path     | Description                                       |
+| ------ | -------- | ------------------------------------------------- |
 | GET    | `/`      | Returns snake metadata (colour, head, tail, etc.) |
-| POST   | `/start` | Called by the engine when a game begins |
-| POST   | `/move`  | Called every turn; returns the next move |
-| POST   | `/end`   | Called by the engine when a game ends |
+| POST   | `/start` | Called by the engine when a game begins           |
+| POST   | `/move`  | Called every turn; returns the next move          |
+| POST   | `/end`   | Called by the engine when a game ends             |
 
 ---
 
@@ -83,24 +83,24 @@ This will rebuild the `docs/` folder from the JSDoc comments in `index.js` and `
 
 ### Documented symbols
 
-| Symbol | File | Description |
-|---|---|---|
-| `info()` | `index.js` | Returns snake metadata |
-| `start(gameState)` | `index.js` | Game start hook |
-| `end(gameState)` | `index.js` | Game end hook |
-| `printBoard(board)` | `index.js` | Renders the board to stdout |
-| `getBlockedCells(gameState)` | `index.js` | Builds the set of occupied cells |
-| `floodFill(start, gameState)` | `index.js` | Counts reachable cells via BFS |
-| `getSafeMoves(gameState)` | `index.js` | Returns valid move directions |
-| `move(gameState)` | `index.js` | Picks and returns the best move |
-| `runServer(handlers)` | `server.js` | Creates and starts the Express server |
+| Symbol                        | File        | Description                           |
+| ----------------------------- | ----------- | ------------------------------------- |
+| `info()`                      | `index.js`  | Returns snake metadata                |
+| `start(gameState)`            | `index.js`  | Game start hook                       |
+| `end(gameState)`              | `index.js`  | Game end hook                         |
+| `printBoard(board)`           | `index.js`  | Renders the board to stdout           |
+| `getBlockedCells(gameState)`  | `index.js`  | Builds the set of occupied cells      |
+| `floodFill(start, gameState)` | `index.js`  | Counts reachable cells via BFS        |
+| `getSafeMoves(gameState)`     | `index.js`  | Returns valid move directions         |
+| `move(gameState)`             | `index.js`  | Picks and returns the best move       |
+| `runServer(handlers)`         | `server.js` | Creates and starts the Express server |
 
 ---
 
 ## Running Tests
 
 ```bash
-npm test -- --coverage
+npm test
 ```
  
 ---

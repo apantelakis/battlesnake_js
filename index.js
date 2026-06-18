@@ -55,8 +55,6 @@ import chalk from "chalk";
  * @returns {{ apiversion: string, author: string, color: string, head: string, tail: string }}
  *   Snake configuration object.
  */
-
-// our hotfix was the color change, the relevant issue was chosen and reopened at the end to ensure proper status flow
 function info() {
   console.log("INFO");
   return {
@@ -75,7 +73,7 @@ function info() {
  * @param {GameState} gameState - The initial game state provided by the engine.
  * @returns {void}
  */
-function start(gameState) {
+function start(_gameState) {
   console.log("GAME START");
 }
 
@@ -86,7 +84,7 @@ function start(gameState) {
  * @param {GameState} gameState - The final game state provided by the engine.
  * @returns {void}
  */
-function end(gameState) {
+function end(_gameState) {
   console.log("GAME OVER\n");
 }
 
@@ -106,21 +104,21 @@ function printBoard(board) {
   const { width, height, food, snakes } = board;
   const cells = new Map();
   for (const f of food) {
-    cells.set(`${f.x},${f.y}`, chalk.bgGreen.black(' * '));
+    cells.set(`${f.x},${f.y}`, chalk.bgGreen.black(" * "));
   }
   for (const snake of snakes) {
     for (let i = 0; i < snake.body.length; i++) {
       const part = snake.body[i];
-      const symbol = i === 0 ? chalk.bgRed.white(' H ') : chalk.bgYellow.black(' B ');
+      const symbol = i === 0 ? chalk.bgRed.white(" H ") : chalk.bgYellow.black(" B ");
       cells.set(`${part.x},${part.y}`, symbol);
     }
   }
   for (let y = height - 1; y >= 0; y--) {
     for (let x = 0; x < width; x++) {
-      const symbol = cells.get(`${x},${y}`) ?? chalk.bgBlackBright.white(' . ');
+      const symbol = cells.get(`${x},${y}`) ?? chalk.bgBlackBright.white(" . ");
       process.stdout.write(symbol);
     }
-    process.stdout.write('\n');
+    process.stdout.write("\n");
   }
 }
 
@@ -175,14 +173,16 @@ export function floodFill(start, gameState) {
     const neighbors = [
       { x: current.x + 1, y: current.y },
       { x: current.x - 1, y: current.y },
-      { x: current.x,     y: current.y + 1 },
-      { x: current.x,     y: current.y - 1 },
+      { x: current.x, y: current.y + 1 },
+      { x: current.x, y: current.y - 1 },
     ];
     for (const n of neighbors) {
       const key = `${n.x},${n.y}`;
       if (
-        n.x >= 0 && n.x < width &&
-        n.y >= 0 && n.y < height &&
+        n.x >= 0 &&
+        n.x < width &&
+        n.y >= 0 &&
+        n.y < height &&
         !visited.has(key) &&
         !blocked.has(key)
       ) {
@@ -221,16 +221,16 @@ export function getSafeMoves(gameState) {
   let isMoveSafe = { up: true, down: true, left: true, right: true };
 
   // Neck
-  if (myNeck.x < myHead.x)      isMoveSafe.left  = false;
+  if (myNeck.x < myHead.x) isMoveSafe.left = false;
   else if (myNeck.x > myHead.x) isMoveSafe.right = false;
-  else if (myNeck.y < myHead.y) isMoveSafe.down  = false;
-  else if (myNeck.y > myHead.y) isMoveSafe.up    = false;
+  else if (myNeck.y < myHead.y) isMoveSafe.down = false;
+  else if (myNeck.y > myHead.y) isMoveSafe.up = false;
 
   // Step 1 - Bounds
-  if (myHead.x + 1 >= width)  isMoveSafe.right = false;
-  if (myHead.x - 1 < 0)       isMoveSafe.left  = false;
-  if (myHead.y + 1 >= height) isMoveSafe.up    = false;
-  if (myHead.y - 1 < 0)       isMoveSafe.down  = false;
+  if (myHead.x + 1 >= width) isMoveSafe.right = false;
+  if (myHead.x - 1 < 0) isMoveSafe.left = false;
+  if (myHead.y + 1 >= height) isMoveSafe.up = false;
+  if (myHead.y - 1 < 0) isMoveSafe.down = false;
 
   // Step 2 - Own body (allow tail if didn't eat)
   const myBody = gameState.you.body;
@@ -241,9 +241,9 @@ export function getSafeMoves(gameState) {
   for (const part of myBody) {
     if (!myAte && part.x === myTail.x && part.y === myTail.y) continue;
     if (part.x === myHead.x + 1 && part.y === myHead.y) isMoveSafe.right = false;
-    if (part.x === myHead.x - 1 && part.y === myHead.y) isMoveSafe.left  = false;
-    if (part.y === myHead.y + 1 && part.x === myHead.x) isMoveSafe.up    = false;
-    if (part.y === myHead.y - 1 && part.x === myHead.x) isMoveSafe.down  = false;
+    if (part.x === myHead.x - 1 && part.y === myHead.y) isMoveSafe.left = false;
+    if (part.y === myHead.y + 1 && part.x === myHead.x) isMoveSafe.up = false;
+    if (part.y === myHead.y - 1 && part.x === myHead.x) isMoveSafe.down = false;
   }
 
   // Step 3 - Other snakes (allow tail if didn't eat)
@@ -254,9 +254,9 @@ export function getSafeMoves(gameState) {
     for (const part of snake.body) {
       if (!theirAte && part.x === theirTail.x && part.y === theirTail.y) continue;
       if (part.x === myHead.x + 1 && part.y === myHead.y) isMoveSafe.right = false;
-      if (part.x === myHead.x - 1 && part.y === myHead.y) isMoveSafe.left  = false;
-      if (part.y === myHead.y + 1 && part.x === myHead.x) isMoveSafe.up    = false;
-      if (part.y === myHead.y - 1 && part.x === myHead.x) isMoveSafe.down  = false;
+      if (part.x === myHead.x - 1 && part.y === myHead.y) isMoveSafe.left = false;
+      if (part.y === myHead.y + 1 && part.x === myHead.x) isMoveSafe.up = false;
+      if (part.y === myHead.y - 1 && part.x === myHead.x) isMoveSafe.down = false;
     }
   }
 
@@ -270,14 +270,14 @@ export function getSafeMoves(gameState) {
     const possibleOppMoves = [
       { x: oppHead.x + 1, y: oppHead.y },
       { x: oppHead.x - 1, y: oppHead.y },
-      { x: oppHead.x,     y: oppHead.y + 1 },
-      { x: oppHead.x,     y: oppHead.y - 1 },
+      { x: oppHead.x, y: oppHead.y + 1 },
+      { x: oppHead.x, y: oppHead.y - 1 },
     ];
     for (const pos of possibleOppMoves) {
       if (pos.x === myHead.x + 1 && pos.y === myHead.y) isMoveSafe.right = false;
-      if (pos.x === myHead.x - 1 && pos.y === myHead.y) isMoveSafe.left  = false;
-      if (pos.y === myHead.y + 1 && pos.x === myHead.x) isMoveSafe.up    = false;
-      if (pos.y === myHead.y - 1 && pos.x === myHead.x) isMoveSafe.down  = false;
+      if (pos.x === myHead.x - 1 && pos.y === myHead.y) isMoveSafe.left = false;
+      if (pos.y === myHead.y + 1 && pos.x === myHead.x) isMoveSafe.up = false;
+      if (pos.y === myHead.y - 1 && pos.x === myHead.x) isMoveSafe.down = false;
     }
   }
 
@@ -307,14 +307,15 @@ export function findHuntTarget(gameState) {
   const myLength = gameState.you.length;
 
   const smallerSnakes = gameState.board.snakes.filter(
-    s => s.id !== gameState.you.id && s.length < myLength
+    (s) => s.id !== gameState.you.id && s.length < myLength
   );
 
   if (smallerSnakes.length === 0) return null;
 
   return smallerSnakes.reduce((closest, snake) => {
-    const distSnake   = Math.abs(snake.body[0].x - myHead.x) + Math.abs(snake.body[0].y - myHead.y);
-    const distClosest = Math.abs(closest.body[0].x - myHead.x) + Math.abs(closest.body[0].y - myHead.y);
+    const distSnake = Math.abs(snake.body[0].x - myHead.x) + Math.abs(snake.body[0].y - myHead.y);
+    const distClosest =
+      Math.abs(closest.body[0].x - myHead.x) + Math.abs(closest.body[0].y - myHead.y);
     return distSnake < distClosest ? snake : closest;
   });
 }
@@ -347,10 +348,10 @@ function move(gameState) {
   }
 
   const moveDeltas = {
-    up:    { x: 0,  y: 1  },
-    down:  { x: 0,  y: -1 },
-    left:  { x: -1, y: 0  },
-    right: { x: 1,  y: 0  },
+    up: { x: 0, y: 1 },
+    down: { x: 0, y: -1 },
+    left: { x: -1, y: 0 },
+    right: { x: 1, y: 0 },
   };
 
   // Step 5 - Use flood fill to pick move with most open space
@@ -364,7 +365,7 @@ function move(gameState) {
   const food = gameState.board.food;
   if (food.length > 0) {
     const closestFood = food.reduce((closest, f) => {
-      const distF       = Math.abs(f.x - myHead.x) + Math.abs(f.y - myHead.y);
+      const distF = Math.abs(f.x - myHead.x) + Math.abs(f.y - myHead.y);
       const distClosest = Math.abs(closest.x - myHead.x) + Math.abs(closest.y - myHead.y);
       return distF < distClosest ? f : closest;
     });
@@ -374,16 +375,18 @@ function move(gameState) {
       gameState
     );
 
-    const equalMoves = safeMoves.filter(m => {
+    const equalMoves = safeMoves.filter((m) => {
       const pos = { x: myHead.x + moveDeltas[m].x, y: myHead.y + moveDeltas[m].y };
       return floodFill(pos, gameState) === bestSpace;
     });
 
     nextMove = equalMoves.reduce((best, move) => {
-      const distMove = Math.abs((myHead.x + moveDeltas[move].x) - closestFood.x)
-                     + Math.abs((myHead.y + moveDeltas[move].y) - closestFood.y);
-      const distBest = Math.abs((myHead.x + moveDeltas[best].x) - closestFood.x)
-                     + Math.abs((myHead.y + moveDeltas[best].y) - closestFood.y);
+      const distMove =
+        Math.abs(myHead.x + moveDeltas[move].x - closestFood.x) +
+        Math.abs(myHead.y + moveDeltas[move].y - closestFood.y);
+      const distBest =
+        Math.abs(myHead.x + moveDeltas[best].x - closestFood.x) +
+        Math.abs(myHead.y + moveDeltas[best].y - closestFood.y);
       return distMove < distBest ? move : best;
     });
   }
