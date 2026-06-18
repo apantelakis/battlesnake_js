@@ -19,7 +19,7 @@
     "url": "git+https://github.com/BattlesnakeOfficial/starter-snake-javascript.git"
   },
   "dependencies": {
-    "express": "^4.20.0"
+    "express": "^4.22.2"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
