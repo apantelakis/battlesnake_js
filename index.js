@@ -283,13 +283,51 @@ export function getSafeMoves(gameState) {
 }
 
 /**
+ * Finds the nearest smaller snake to hunt, if one exists.
+ *
+ * A snake is a valid hunt target if:
+ * - It is not our own snake.
+ * - Its length is **strictly less** than ours (guarantees we win a head-to-head).
+ *
+ * Among all valid targets the one with the smallest Manhattan distance from our
+ * head to their head is returned.  Returns `null` when no smaller snake is on
+ * the board.
+ *
+ * @param {GameState} gameState - Current game state.
+ * @returns {Snake|null} The closest smaller snake, or `null` if none exists.
+ *
+ * @example
+ * const target = findHuntTarget(gameState);
+ * if (target) console.log('Hunting', target.name);
+ */
+export function findHuntTarget(gameState) {
+  const myHead = gameState.you.body[0];
+  const myLength = gameState.you.length;
+
+  const smallerSnakes = gameState.board.snakes.filter(
+    s => s.id !== gameState.you.id && s.length < myLength
+  );
+
+  if (smallerSnakes.length === 0) return null;
+
+  return smallerSnakes.reduce((closest, snake) => {
+    const distSnake   = Math.abs(snake.body[0].x - myHead.x) + Math.abs(snake.body[0].y - myHead.y);
+    const distClosest = Math.abs(closest.body[0].x - myHead.x) + Math.abs(closest.body[0].y - myHead.y);
+    return distSnake < distClosest ? snake : closest;
+  });
+}
+
+/**
  * Determines the best move for the current turn and returns it to the engine.
  *
  * Strategy (in priority order):
  * 1. Falls back to `"down"` if no safe move exists.
  * 2. Picks the safe move that maximises open space (flood fill).
- * 3. Among moves with equal flood-fill scores, prefers the one that moves
- *    closer to the nearest food item (Manhattan distance).
+ * 3. **Hunt mode** — if a smaller snake exists and one of the equal-space moves
+ *    brings us closer to its head (setting up a winning head-to-head), prefer
+ *    that move over food-seeking.
+ * 4. Among moves with equal flood-fill scores and no hunt target nearby,
+ *    prefers the one that moves closer to the nearest food (Manhattan distance).
  *
  * After deciding, the board is printed asynchronously via {@link printBoard}
  * so it does not delay the HTTP response.
